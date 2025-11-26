@@ -1,70 +1,48 @@
-Hiring Process Automation (Flowable + Spring Boot)
+# Hiring Process Automation (Flowable + Spring Boot)
 
-This project implements an automated Hiring Workflow using Flowable BPMN, Spring Boot, Quartz Scheduler, and H2 Database.
-It focuses on backend logic only and can be fully tested via Postman.
+This project implements an automated hiring workflow using **Flowable BPMN**, **Spring Boot**, **Quartz Scheduler**, and an **H2 in-memory database**.  
+It focuses entirely on backend logic and can be fully tested using **Postman**.
 
-Requirements
+---
 
-Before setting up the project, ensure you have:
+## 📌 Requirements
 
-Java 17
+Before running the project, ensure you have:
 
-Maven 3.8+
+- **Java 17**
+- **Maven 3.8+**
+- *(Optional)* IntelliJ IDEA or any Java IDE
+- *(Optional)* Lombok plugin installed in your IDE
 
-(Optional) IntelliJ IDEA or any Java IDE
+Library versions used (from `pom.xml`):
 
-(Optional) Lombok plugin installed in your IDE
+- **Spring Boot:** 3.5.8  
+- **Flowable BPMN:** 7.2.0  
+- **Lombok:** 1.18.32  
+- **Quartz:** Managed by Spring Boot  
+- **H2 Database:** Managed by Spring Boot  
 
-Library versions from pom.xml:
-Spring Boot	3.5.8
-Flowable BPMN	7.2.0
-Lombok	1.18.32
-Quartz	Managed by Spring Boot
-H2 Database	Managed by Spring Boot
+---
 
+## 🚀 Installation & Setup
 
-Installation & Setup
+Follow the steps below to run the project locally.
 
-Follow the steps below to run the project locally:
+### 1️⃣ Clone the Repository
 
-1️⃣ Clone the Repository
+```bash
 git clone https://github.com/sudeakarcay/Flowable-Spring-Boot.git
 cd Flowable-Spring-Boot
-
-2️⃣ Build the Project
-
-Use Maven to download all dependencies:
+```
+### 2️⃣ Build the Project
 
 mvn clean install
 
-3️⃣ Run the Application
-
-Start the Spring Boot application:
+### 3️⃣ Run the Application
 
 mvn spring-boot:run
 
-The application will start at:
-
-http://localhost:8080
-
-🗄️ Database (H2 In-Memory)
-
-The project uses H2 in-memory database for development and testing.
-
-H2 Console URL:
+## H2 Console URL 
 
 http://localhost:8080/h2-console
 
-
-📁 BPMN Workflow
-
-The BPMN process file is automatically deployed on startup:
-
-src/main/resources/processes/hiring-process.bpmn20.xml
-
-
-Flowable reads this file, creates the process definition, and handles execution.
-
-📡 API Usage
-
-Use Postman or any REST client to interact with the workflow.
