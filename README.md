@@ -35,13 +35,13 @@ git clone https://github.com/sudeakarcay/Flowable-Spring-Boot.git
 cd Flowable-Spring-Boot
 ```
 ### 2️⃣ Build the Project
-
+```bash
 mvn clean install
-
+```
 ### 3️⃣ Run the Application
-
+```bash
 mvn spring-boot:run
-
+```
 ## H2 Console URL 
 
 http://localhost:8080/h2-console
