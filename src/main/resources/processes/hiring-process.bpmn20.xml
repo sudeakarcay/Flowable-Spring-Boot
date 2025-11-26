@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:flowable="http://flowable.org/bpmn"
+        targetNamespace="http://bpmn.io/bpmn">
+
+    <process id="hiringProcess" name="Hiring Process" isExecutable="true">
+
+        <!-- Start Event -->
+        <startEvent id="StartEvent_1y45yut" name="Application received">
+            <outgoing>Flow_1u75ogm</outgoing>
+        </startEvent>
+
+        <!-- Categorize CV (Service Task) -->
+        <serviceTask id="categorizeCVTask"
+                     name="Categorize CV"
+                     flowable:delegateExpression="${categorizeCvService}">
+            <incoming>Flow_1u75ogm</incoming>
+            <outgoing>Flow_1e6vkp4</outgoing>
+        </serviceTask>
+
+        <sequenceFlow id="Flow_1u75ogm"
+                      sourceRef="StartEvent_1y45yut"
+                      targetRef="categorizeCVTask" />
+
+        <!-- HR Approval (User Task) -->
+        <userTask id="hrApprovalTask"
+                  name="HR approval"
+                  flowable:assignee="hr">
+            <incoming>Flow_1e6vkp4</incoming>
+            <outgoing>Flow_0nj79pr</outgoing>
+        </userTask>
+
+        <sequenceFlow id="Flow_1e6vkp4"
+                      sourceRef="categorizeCVTask"
+                      targetRef="hrApprovalTask" />
+
+        <!-- Exclusive Gateway: HR Approved? -->
+        <exclusiveGateway id="Gateway_HRDecision"
+                          name="Is application approved by HR?">
+            <incoming>Flow_0nj79pr</incoming>
+            <outgoing>Flow_13kfsz9</outgoing>
+            <outgoing>Flow_1if6c9w</outgoing>
+        </exclusiveGateway>
+
+        <sequenceFlow id="Flow_0nj79pr"
+                      sourceRef="hrApprovalTask"
+                      targetRef="Gateway_HRDecision" />
+
+        <!-- HR rejection -->
+        <serviceTask id="Activity_1dwoqhi"
+                     name="Send rejection email"
+                     flowable:delegateExpression="${sendRejectionEmailService}">
+            <incoming>Flow_13kfsz9</incoming>
+            <outgoing>Flow_1m5rts7</outgoing>
+        </serviceTask>
+
+        <sequenceFlow id="Flow_13kfsz9"
+                      name="NO"
+                      sourceRef="Gateway_HRDecision"
+                      targetRef="Activity_1dwoqhi">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${hrApproved == false}]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="Event_1t08952">
+            <extensionElements>
+                <flowable:executionListener
+                        event="end"
+                        delegateExpression="${endEventListener}" />
+            </extensionElements>
+            <incoming>Flow_1m5rts7</incoming>
+        </endEvent>
+
+        <sequenceFlow id="Flow_1m5rts7"
+                      sourceRef="Activity_1dwoqhi"
+                      targetRef="Event_1t08952" />
+
+        <!-- HR approves -->
+        <serviceTask id="Activity_0eqepth"
+                     name="Send interview invite"
+                     flowable:delegateExpression="${sendInterviewInviteService}">
+            <incoming>Flow_1if6c9w</incoming>
+            <outgoing>Flow_1sxz9s7</outgoing>
+        </serviceTask>
+
+        <sequenceFlow id="Flow_1if6c9w"
+                      name="YES"
+                      sourceRef="Gateway_HRDecision"
+                      targetRef="Activity_0eqepth">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${hrApproved == true}]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <!-- Candidate confirmation (User Task) -->
+        <userTask id="candidateTask"
+                  name="Candidate confirmation"
+                  flowable:assignee="candidate">
+            <extensionElements>
+                <flowable:taskListener event="create" delegateExpression="${candidateTaskListener}" />
+            </extensionElements>
+            <incoming>Flow_1sxz9s7</incoming>
+            <outgoing>Flow_0vfsgy5</outgoing>
+        </userTask>
+
+        <sequenceFlow id="Flow_1sxz9s7"
+                      sourceRef="Activity_0eqepth"
+                      targetRef="candidateTask" />
+
+        <!-- Exclusive Gateway: Will candidate attend? -->
+        <exclusiveGateway id="Gateway_0hfatwn"
+                          name="Will candidate attend?">
+            <incoming>Flow_0vfsgy5</incoming>
+            <outgoing>Flow_1ss7ukf</outgoing>
+            <outgoing>Flow_0nd84i7</outgoing>
+        </exclusiveGateway>
+
+        <sequenceFlow id="Flow_0vfsgy5"
+                      sourceRef="candidateTask"
+                      targetRef="Gateway_0hfatwn" />
+
+        <!-- Candidate NO  -->
+        <sequenceFlow id="Flow_1ss7ukf"
+                      name="NO"
+                      sourceRef="Gateway_0hfatwn"
+                      targetRef="Event_1wsuade">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${willAttend == false}]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="Event_1wsuade">
+            <extensionElements>
+                <flowable:executionListener
+                        event="end"
+                        delegateExpression="${endEventListener}" />
+            </extensionElements>
+            <incoming>Flow_1ss7ukf</incoming>
+        </endEvent>
+
+        <!-- Candidate YES create interview -->
+        <serviceTask id="Activity_049fxh3"
+                     name="Create interview"
+                     flowable:delegateExpression="${createInterviewDelegate}">
+            <incoming>Flow_0nd84i7</incoming>
+            <outgoing>Flow_0pewjvm</outgoing>
+        </serviceTask>
+
+        <sequenceFlow id="Flow_0nd84i7"
+                      name="YES"
+                      sourceRef="Gateway_0hfatwn"
+                      targetRef="Activity_049fxh3">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[${willAttend == true}]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <endEvent id="Event_1d3w94a">
+            <extensionElements>
+                <flowable:executionListener
+                        event="end"
+                        delegateExpression="${endEventListener}" />
+            </extensionElements>
+            <incoming>Flow_0pewjvm</incoming>
+        </endEvent>
+
+    </process>
+</definitions>
