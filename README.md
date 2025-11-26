@@ -5,7 +5,7 @@ It focuses entirely on backend logic and can be fully tested using **Postman**.
 
 ---
 
-## 📌 Requirements
+## Requirements
 
 Before running the project, ensure you have:
 
@@ -24,7 +24,7 @@ Library versions used (from `pom.xml`):
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 Follow the steps below to run the project locally.
 
