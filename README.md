@@ -28,8 +28,8 @@ Installation & Setup
 Follow the steps below to run the project locally:
 
 1️⃣ Clone the Repository
-git clone https://github.com/<your-username>/<your-repo>.git
-cd <your-repo>
+git clone https://github.com/sudeakarcay/Flowable-Spring-Boot.git
+cd Flowable-Spring-Boot
 
 2️⃣ Build the Project
 
