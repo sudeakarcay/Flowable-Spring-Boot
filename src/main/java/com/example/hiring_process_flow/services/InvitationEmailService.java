@@ -11,6 +11,5 @@ public class InvitationEmailService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         System.out.println("Interview invitation sent! You have an hour to respond!");
-        execution.setVariable("hrApproved", true);
     }
 }
