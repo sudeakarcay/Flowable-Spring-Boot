@@ -25,7 +25,7 @@ public class CandidateQuartzScheduler {
                     .build();
 
             // Schedule period should be an hour.
-            Date startAt = Date.from(Instant.now().plus(1, ChronoUnit.MINUTES));
+            Date startAt = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("candidateJobTrigger-" + taskId)
